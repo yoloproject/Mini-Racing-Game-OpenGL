@@ -1,0 +1,440 @@
+TextMode (TEXT_OVERLAID)  
+Dim camX#, camY#, camZ#, camAng#, camCarX#, camCarY#,camCarZ#    'Posisi kamera
+camX# = 0
+camY# = 1.1
+camZ# = 0                                                    
+camCarX#=0
+camCarZ#=5
+camCarY#=5  
+
+Dim speedconst# =0.1   
+
+Dim timeToDie#
+timeToDie#=150
+
+Dim cek#
+cek# = 0  
+
+'Nyawa
+Dim nyawa#
+nyawa# = 3
+
+' TEKSTUR
+dim tex(10)
+tex(1) = LoadTexture ("gbr\container2.png") ' TEKSTUR KIRI
+tex(2) = LoadTexture ("gbr\container2.png") ' TEKSTUR KANAN
+tex(3) = LoadTexture ("gbr\soil.png") ' TEKSTUR BAWAH
+tex(4) = LoadTexture ("gbr\container2.png") ' TEKSTUR ATAS
+tex(5) = LoadTexture ("gbr\sky.png") ' TEKSTUR BG FINISH
+tex(6) = LoadTexture ("gbr\kayupeti.jpg") ' TEKSTUR BOX    
+tex(7) = LoadTexture ("gbr\cockpit.png") ' TEKSTUR Cockpit                       
+tex(8) = LoadTexture ("gbr\atas.jpg") ' TEKSTUR BODI ATAS
+tex(9) = LoadTexture ("gbr\blkg.jpg") ' TEKSTUR BODI BAWAH
+tex(10) = LoadTexture ("gbr\finish.png") ' TEKSTUR FINISH
+
+glEnable (GL_TEXTURE_2D)
+
+glMatrixMode (GL_PROJECTION)
+glLoadIdentity ()
+gluPerspective (60, (1.0*WindowWidth()) / WindowHeight(), 0.1, 100)
+glMatrixMode (GL_MODELVIEW)
+
+while true
+
+    ' CLEAR SCREEN
+    glClear (GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
+
+    ' POSISI  KAMERA
+    glLoadIdentity ()
+    glRotatef (-camAng#, 0, 1, 0) 
+    glTranslatef (-camX#, -camY#, -camZ#)              
+    gluLookAt(camCarX#-camX#, camCarY#, camCarZ#, camCarX#, camY#, camZ#-5, 0,1,0) 
+
+    ' Lintasan 1
+    ' Tembok kiri
+    glBindTexture (GL_TEXTURE_2D, tex (1))     
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f ( -5,  0,  0)
+        glTexCoord2f ( 0, 1): glVertex3f ( -5, 10,  0)
+        glTexCoord2f ( 10, 1): glVertex3f ( -5, 10,-200)
+        glTexCoord2f ( 10, 0): glVertex3f ( -5,  0,-200)
+    glEnd ()
+    
+    'tembok kanan
+    glBindTexture (GL_TEXTURE_2D, tex (2))    
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (  5,  0,  0)
+        glTexCoord2f ( 0, 1): glVertex3f (  5, 10,  0)
+        glTexCoord2f ( 10, 1): glVertex3f (  5, 10,-200)
+        glTexCoord2f ( 10, 0): glVertex3f (  5,  0,-200)
+    glEnd ()    
+
+    'tembok bawah
+    glBindTexture (GL_TEXTURE_2D, tex (3))     
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (  5, 0,  0)
+        glTexCoord2f ( 0, 1): glVertex3f ( -5, 0,  0)
+        glTexCoord2f ( 1, 1): glVertex3f ( -5,  0,-200)
+        glTexCoord2f ( 1, 0): glVertex3f (  5,  0,-200)
+    glEnd ()    
+
+    'tembok atas
+    glBindTexture (GL_TEXTURE_2D, tex (4))    
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (  5, 10,  0)
+        glTexCoord2f ( 0, 1): glVertex3f ( -5, 10,  0)
+        glTexCoord2f ( 1, 1): glVertex3f ( -5, 10,-200)
+        glTexCoord2f ( 1, 0): glVertex3f (  5, 10,-200)
+    glEnd () 
+    
+    'tembok Finish
+    glBindTexture (GL_TEXTURE_2D, tex (10))      ' Use texture 2
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (5, 10, -200)
+        glTexCoord2f ( 0, 1): glVertex3f (-5, 10,-200)
+        glTexCoord2f ( 1, 1): glVertex3f (-5, 7,-200)
+        glTexCoord2f ( 1, 0): glVertex3f (5, 7,-200)
+    glEnd () 
+    
+    'tembok Belakang Finish
+    glBindTexture (GL_TEXTURE_2D, tex (5))      ' Use texture 2
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (5, 7, -200)
+        glTexCoord2f ( 0, 1): glVertex3f (-5, 7,-200)
+        glTexCoord2f ( 1, 1): glVertex3f (-5, 0,-200)
+        glTexCoord2f ( 1, 0): glVertex3f (5, 0,-200)
+    glEnd ()
+    
+
+    'Box 1
+    'Sisi kiri
+    glBindTexture (GL_TEXTURE_2D, tex (6))      ' Use texture 1
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (-2, 0,-78)
+        glTexCoord2f ( 0, 1): glVertex3f (-2, 3,-78)
+        glTexCoord2f ( 1, 1): glVertex3f (-2, 3,-80)
+        glTexCoord2f ( 1, 0): glVertex3f (-2, 0,-80)
+    glEnd ()
+    
+    ' Sisi Kanan
+    glBindTexture (GL_TEXTURE_2D, tex (6))      
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (1, 0,-78)
+        glTexCoord2f ( 0, 1): glVertex3f (1, 3,-78)
+        glTexCoord2f ( 1, 1): glVertex3f (1, 3,-80)
+        glTexCoord2f ( 1, 0): glVertex3f (1, 0,-80)
+    glEnd ()
+    
+    ' Sisi atas
+    glBindTexture (GL_TEXTURE_2D, tex (6))    
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (  1,  3,-78)
+        glTexCoord2f ( 0, 1): glVertex3f ( -2,  3,-78)
+        glTexCoord2f ( 1, 1): glVertex3f ( -2,  3,-80)
+        glTexCoord2f ( 1, 0): glVertex3f (  1,  3,-80)
+    glEnd ()
+
+    ' Sisi depan
+    glBindTexture (GL_TEXTURE_2D, tex (6)) 
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (1, 3,-78)
+        glTexCoord2f ( 0, 1): glVertex3f (-2, 3,-78)
+        glTexCoord2f ( 1, 1): glVertex3f (-2, 0,-78)
+        glTexCoord2f ( 1, 0): glVertex3f (1, 0,-78)
+    glEnd ()
+    
+    ' Sisi belakang
+    glBindTexture (GL_TEXTURE_2D, tex (6)) 
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (1, 3,-80)
+        glTexCoord2f ( 0, 1): glVertex3f (-2, 3,-80)
+        glTexCoord2f ( 1, 1): glVertex3f (-2, 0,-80)
+        glTexCoord2f ( 1, 0): glVertex3f (1, 0,-80)
+    glEnd ()
+    
+    
+    
+    'Box 2
+    ' Sisi Kanan
+    glBindTexture (GL_TEXTURE_2D, tex (6)) 
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (-3+1, 0,-108)
+        glTexCoord2f ( 0, 1): glVertex3f (-3+1, 3,-108)
+        glTexCoord2f ( 1, 1): glVertex3f (-3+1, 3,-110)
+        glTexCoord2f ( 1, 0): glVertex3f (-3+1, 0,-110)
+    glEnd ()
+
+    ' Sisi depan
+    glBindTexture (GL_TEXTURE_2D, tex (6))  
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (-3+1, 3,-108)
+        glTexCoord2f ( 0, 1): glVertex3f (-3+-2, 3,-108)
+        glTexCoord2f ( 1, 1): glVertex3f (-3+-2, 0,-108)
+        glTexCoord2f ( 1, 0): glVertex3f (-3+1, 0,-108)
+    glEnd ()
+    
+    ' Sisi belakang
+    glBindTexture (GL_TEXTURE_2D, tex (6)) 
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (-3+1, 3,-110)
+        glTexCoord2f ( 0, 1): glVertex3f (-3+-2, 3,-110)
+        glTexCoord2f ( 1, 1): glVertex3f (-3+-2, 0,-110)
+        glTexCoord2f ( 1, 0): glVertex3f (-3+1, 0,-110)
+    glEnd ()
+    
+    'Box 3
+    ' Sisi Kanan
+    glBindTexture (GL_TEXTURE_2D, tex (6))  
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (2+1, 0,-20-108)
+        glTexCoord2f ( 0, 1): glVertex3f (2+1, 3,-20-108)
+        glTexCoord2f ( 1, 1): glVertex3f (2+1, 3,-20-110)
+        glTexCoord2f ( 1, 0): glVertex3f (2+1, 0,-20-110)
+    glEnd ()
+
+    ' Sisi depan
+    glBindTexture (GL_TEXTURE_2D, tex (6))
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (3+1, 3,-20-108)
+        glTexCoord2f ( 0, 1): glVertex3f (3-2, 3,-20-108)
+        glTexCoord2f ( 1, 1): glVertex3f (3-2, 0,-20-108)
+        glTexCoord2f ( 1, 0): glVertex3f (3+1, 0,-20-108)
+    glEnd ()
+    
+    ' Sisi belakang
+    glBindTexture (GL_TEXTURE_2D, tex (6)) 
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (3+1, 3,-20-110)
+        glTexCoord2f ( 0, 1): glVertex3f (3-2, 3,-20-110)
+        glTexCoord2f ( 1, 1): glVertex3f (3-2, 0,-20-110)
+        glTexCoord2f ( 1, 0): glVertex3f (3+1, 0,-20-110)
+    glEnd ()
+  
+    ' Sisi Kiri
+    glBindTexture (GL_TEXTURE_2D, tex (6))
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (3+-2, 0,-20-108)
+        glTexCoord2f ( 0, 1): glVertex3f (3+-2, 3,-20-108)
+        glTexCoord2f ( 1, 1): glVertex3f (3+-2, 3,-20-110)
+        glTexCoord2f ( 1, 0): glVertex3f (3+-2, 0,-20-110)
+    glEnd ()
+    
+    
+    
+    'Box 4
+    ' Sisi Kanan
+    glBindTexture (GL_TEXTURE_2D, tex (6))
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (1+1, 0,-20-108)
+        glTexCoord2f ( 0, 1): glVertex3f (1+1, 3,-20-108)
+        glTexCoord2f ( 1, 1): glVertex3f (1+1, 3,-20-110)
+        glTexCoord2f ( 1, 0): glVertex3f (1+1, 0,-20-110)
+    glEnd ()
+
+    ' Sisi depan
+    glBindTexture (GL_TEXTURE_2D, tex (6))
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (1+1, 3,-40-108)
+        glTexCoord2f ( 0, 1): glVertex3f (1-2, 3,-40-108)
+        glTexCoord2f ( 1, 1): glVertex3f (1-2, 0,-40-108)
+        glTexCoord2f ( 1, 0): glVertex3f (1+1, 0,-40-108)
+    glEnd ()
+    
+    ' Sisi belakang
+    glBindTexture (GL_TEXTURE_2D, tex (6)) 
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (1+1, 3,-40-110)
+        glTexCoord2f ( 0, 1): glVertex3f (1-2, 3,-40-110)
+        glTexCoord2f ( 1, 1): glVertex3f (1-2, 0,-40-110)
+        glTexCoord2f ( 1, 0): glVertex3f (1+1, 0,-40-110)
+    glEnd ()
+  
+    ' Sisi Kiri
+    glBindTexture (GL_TEXTURE_2D, tex (6)) 
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (1+-2, 0,-40-108)
+        glTexCoord2f ( 0, 1): glVertex3f (1+-2, 3,-40-108)
+        glTexCoord2f ( 1, 1): glVertex3f (1+-2, 3,-40-110)
+        glTexCoord2f ( 1, 0): glVertex3f (1+-2, 0,-40-110)
+    glEnd ()
+    
+    'Box 5
+    ' Sisi Kanan
+    glBindTexture (GL_TEXTURE_2D, tex (6)) 
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (-1+1, 0,-60-108)
+        glTexCoord2f ( 0, 1): glVertex3f (-1+1, 3,-60-108)
+        glTexCoord2f ( 1, 1): glVertex3f (-1+1, 3,-60-110)
+        glTexCoord2f ( 1, 0): glVertex3f (-1+1, 0,-60-110)
+    glEnd ()
+
+    ' Sisi depan
+    glBindTexture (GL_TEXTURE_2D, tex (6)) 
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (-1+1, 3,-60-108)
+        glTexCoord2f ( 0, 1): glVertex3f (-1-2, 3,-60-108)
+        glTexCoord2f ( 1, 1): glVertex3f (-1-2, 0,-60-108)
+        glTexCoord2f ( 1, 0): glVertex3f (-1+1, 0,-60-108)
+    glEnd ()
+    
+    ' Sisi belakang
+    glBindTexture (GL_TEXTURE_2D, tex (6))
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (-1+1, 3,-60-110)
+        glTexCoord2f ( 0, 1): glVertex3f (-1-2, 3,-60-110)
+        glTexCoord2f ( 1, 1): glVertex3f (-1-2, 0,-60-110)
+        glTexCoord2f ( 1, 0): glVertex3f (-1+1, 0,-60-110)
+    glEnd ()
+  
+    ' Sisi Kiri
+    glBindTexture (GL_TEXTURE_2D, tex (6))
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (-1+-2, 0,-60-108)
+        glTexCoord2f ( 0, 1): glVertex3f (-1+-2, 3,-60-108)
+        glTexCoord2f ( 1, 1): glVertex3f (-1+-2, 3,-60-110)
+        glTexCoord2f ( 1, 0): glVertex3f (-1+-2, 0,-60-110)
+    glEnd ()
+    
+    Locate 0,0
+    print "Nyawa : "
+    print  nyawa#
+    DrawText()
+
+    ' Move camera
+    while SyncTimer (10)  
+       
+       camX# = camX# - sind (camAng#) * .4
+       camZ# = camZ# - cosd (camAng#) * .4  
+
+        if ScanKeyDown (VK_UP)  then  
+            camX# = camX# - sind (camAng#) * .2
+            camZ# = camZ# - cosd (camAng#) * .2
+        endif
+        if ScanKeyDown (VK_DOWN) then 
+         camX# = camX# + sind (camAng#) * .1
+            camZ# = camZ# + cosd (camAng#) * .1
+        endif
+
+     If KeyDown("A") Then 
+        camX# = camX# - speedconst#
+     EndIF  
+      If KeyDown("D") Then 
+        camX# = camX# + speedconst#         
+     EndIF
+        
+        
+        if camX# < -4 then 
+            camX#= -4
+        endif       
+        if camX# > 4 then
+            camX#= 4
+        endif  
+
+        'baasan box 1
+        if camZ# <- 76 and camZ# > -77  then
+           if camX# > -2 and camX# < 2 then
+                camZ# = -76
+                if cek# <= 0 then 
+                    nyawa# = nyawa# - 1
+                    cek# = 1
+                endif
+           endif
+        endif
+        
+        'baasan box 2
+        if camZ# < -106 and camZ# > -107  then
+           if camX# > -3+-2 and camX# < -3+2 then
+                camZ# = -106
+                if cek# <= 1 then 
+                    nyawa# = nyawa# - 1
+                    cek# = 2
+                endif
+           endif
+        endif
+        
+        'baasan box 3
+        if camZ# < -20-106 and camZ# > -20-107  then
+           if camX# > 3+-2 and camX# < 3+2 then
+                camZ# = -20-106
+                if cek# <= 2 then 
+                    nyawa# = nyawa# - 1
+                    cek# = 3
+                endif
+           endif
+        endif 
+        
+        'baasan box 4
+        if camZ# < -40-106 and camZ# > -40-107  then
+           if camX# > 1+-2 and camX# < 1+2 then
+                camZ# = -40-106
+                if cek# <= 3 then 
+                    nyawa# = nyawa# - 1
+                    cek# = 4
+                endif
+           endif
+        endif
+        
+        'baasan box 4
+        if camZ# < -60-106 and camZ# > -60-107  then
+           if camX# > -1+-2 and camX# < -1+2 then
+                camZ# = -60-106
+                if cek# <= 4 then 
+                    nyawa# = nyawa# - 1
+                    cek# = 5
+                endif
+           endif
+        endif
+        
+        if nyawa# = 0 then    
+            timeToDie# = timeToDie#-1 
+            locate 15,12
+            printr "GAME OVER"
+            locate 13,14
+            printr "Play Again :)"
+            DrawText ()               
+            if timeToDie# = 0 then
+               run   
+            endif
+        endif
+
+        if camZ# < -200 then
+            cek# = 10
+            camZ# = 200
+            locate 15,12
+            printr "FINISH !!"
+            DrawText () 
+            timeToDie# = timeToDie#-1 
+            if timeToDie# = 140 then
+               run   
+            endif
+        endif
+       
+       if camZ# < 1 and cek# = 10 then
+            run
+        endif
+    wend   
+    'sisi depan 
+    glBindTexture (GL_TEXTURE_2D, tex (9))
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (1+camX#, 1,2+camZ#)
+        glTexCoord2f ( 0, 1): glVertex3f (-1+camX#, 1,2+camZ#)
+        glTexCoord2f ( 1, 1): glVertex3f (-1+camX#, 0,2+camZ#)
+        glTexCoord2f ( 1, 0): glVertex3f (1+camX#, 0,2+camZ#)
+    glEnd ()
+    
+    glBindTexture (GL_TEXTURE_2D, tex (8))   
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (1+camX#, 1,1+camZ#)
+        glTexCoord2f ( 0, 1): glVertex3f (-1+camX#, 1,1+camZ#)
+        glTexCoord2f ( 1, 1): glVertex3f (-1+camX#, 1,2+camZ#)
+        glTexCoord2f ( 1, 0): glVertex3f (1+camX#, 1,2+camZ#)
+    glEnd ()
+    glBegin (GL_QUADS)
+        glTexCoord2f ( 0, 0): glVertex3f (1+camX#, 0,1+camZ#)
+        glTexCoord2f ( 0, 1): glVertex3f (-1+camX#, 0,1+camZ#)
+        glTexCoord2f ( 1, 1): glVertex3f (-1+camX#, 0,-2+camZ#)
+        glTexCoord2f ( 1, 0): glVertex3f (1+camX#, 0,-2+camZ#)
+    glEnd ()
+    
+      SwapBuffers ()
+wend
